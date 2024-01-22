@@ -41,6 +41,7 @@ const app =createApp({
             })
             .catch(err => {
                 console.dir(err)
+                window.location.assign("./login.html")
             })
     },
     getProduct(page){
