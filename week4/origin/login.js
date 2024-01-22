@@ -23,7 +23,6 @@ login() {
         .then(res => {
             console.log(res.data)
             const {token,expired} = res.data
-            console.log(token,expired)
             document.cookie = `hexToken=${token};expires=${new Date(expired)};`;
             window.location.assign("./addProduct.html")
         })

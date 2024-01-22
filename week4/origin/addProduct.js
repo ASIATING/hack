@@ -29,6 +29,7 @@ const app =createApp({
         /(?:(?:^|.*;\s*)hexToken\s*\=\s*([^;]*).*$)|^.*$/,
         "$1",
       );
+      console.log(token)
     axios.defaults.headers.common['Authorization'] = token;
     this.checkLogin();
 
@@ -167,7 +168,6 @@ const app =createApp({
     },
     methods: {
       deletBtn(){
-        this.delProductModal.hide()
         axios.delete(`${this.apiUrl}/api/${this.apiPath}/admin/product/${this.tempProduct.id}`,{ data: this.tempProduct })
         .then(res => {
             console.log(res.data)
