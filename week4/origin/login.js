@@ -25,7 +25,7 @@ login() {
             const {token,expired} = res.data
             console.log(token,expired)
             document.cookie = `hexToken=${token};expires=${new Date(expired)};`;
-            window.location.assign("./products.html")
+            window.location.assign("./addProduct.html")
         })
         .catch(err => {
             console.dir(err)
