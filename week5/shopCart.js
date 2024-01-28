@@ -21,17 +21,19 @@ const app = Vue.createApp({
         VForm: Form,
         VField: Field,
         ErrorMessage: ErrorMessage,
+        
       },
     mounted() {
         const token = document.cookie.replace(/(?:(?:^|.*;\s*)hexToken\s*\=\s*([^;]*).*$)|^.*$/, "$1");
         axios.defaults.headers.common.Authorization = token;
         this.checkLogin()
         this.getCart();
+        console.log(VueLoading);
         
     },
     data() {
         return {
-            isLoding:true,
+            isLoading:true,
             products: [],
             apiUrl:'https://vue3-course-api.hexschool.io/v2', // 請加入站點
             apiPath:'ting-hexschool', // 請加入個人 API Path
@@ -66,12 +68,15 @@ const app = Vue.createApp({
                 })
         },
         getProducts(){
+            this.isLoading = true;
             const url = `${this.apiUrl}/api/${this.apiPath}/products`;
             axios.get(url)
                 .then(res => {
+                    this.isLoading = false;
                     this.products = res.data.products
                 })
                 .catch(err => {
+                    this.isLoading = false;
                     alert(err.response.data.message);
                 })
         },
@@ -97,6 +102,7 @@ const app = Vue.createApp({
                 .then(res => {
                   this.$refs.form.resetForm();
                   this.loadingItem = '';
+                  this.getCart();
                 })
                 .catch(err => {
                     alert(err.response.data.message);
@@ -174,4 +180,5 @@ const app = Vue.createApp({
 
 });
 app.component('userProductModal', userProductModal)
+app.component('loading', VueLoading.Component)
 app.mount('#app')
