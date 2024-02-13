@@ -51,10 +51,12 @@ export default {
           console.log(res.data)
           const { token, expired } = res.data
           document.cookie = `hexToken=${token};expires=${new Date(expired)};`
+          alert(res)
           this.$router.push('/admin/products')
         })
         .catch(err => {
           console.dir(err)
+          alert(err)
         })
     }
   }

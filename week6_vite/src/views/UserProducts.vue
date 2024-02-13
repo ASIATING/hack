@@ -44,6 +44,8 @@
               </tr>
             </tbody>
           </table>
+          <paginationArea :pagination="pagination" @emit-pages="getProducts"></paginationArea>
+          <!-- <paginationArea :pagination="pagination"></paginationArea> -->
         </div>
       </div>
   </div>
@@ -51,7 +53,13 @@
 
 <script>
 import axios from 'axios'
+import UserProductModal from '@/components/UserProductModal.vue'
+import paginationArea from '@/components/paginationArea.vue'
 export default {
+  components: {
+    UserProductModal,
+    paginationArea
+  },
   data () {
     return {
       isLoading: true,
@@ -62,28 +70,32 @@ export default {
       tempProduct: {},
       productModal: null,
       loadingItem: '',
-      form: {
-        user: {
-          name: '',
-          email: '',
-          tel: '',
-          address: ''
-        },
-        message: ''
+      pagination: {}
+      // form: {
+      //   user: {
+      //     name: '',
+      //     email: '',
+      //     tel: '',
+      //     address: ''
+      //   },
+      //   message: ''
 
-      }
+      // }
     }
   },
   mounted () {
     this.getProducts()
   },
   methods: {
-    getProducts () {
+    getProducts (page) {
       this.isLoading = true
-      const url = `${import.meta.env.VITE_API}/api/${import.meta.env.VITE_PATH}/products`
+      console.log(page)
+      const url = `${import.meta.env.VITE_API}/api/${import.meta.env.VITE_PATH}/products?page=${page || 1}`
       axios.get(url)
         .then(res => {
           this.isLoading = false
+          this.pagination = res.data.pagination
+          console.log(this.pagination)
           this.products = res.data.products
         })
         .catch(err => {
@@ -93,7 +105,7 @@ export default {
     },
     getProduct (productId) {
       this.loadingItem = productId
-      const url = `${this.apiUrl}/api/${this.apiPath}/product/${productId}`
+      const url = `${import.meta.env.VITE_API}/api/${import.meta.env.VITE_PATH}/product/${productId}`
       axios.get(url)
         .then(res => {
           this.loadingItem = ''
@@ -103,6 +115,21 @@ export default {
         .catch(err => {
           alert(err.response.data.message)
           this.loadingItem = ''
+        })
+    },
+    addToCart (id, qty = 1) {
+      this.loadingItem = id
+      console.log(id)
+      const url = `${import.meta.env.VITE_API}/api/${import.meta.env.VITE_PATH}/cart`
+      axios.post(url, { data: { product_id: id, qty } })
+        .then(res => {
+          this.loadingItem = ''
+          alert(res.data.message)
+          this.$refs.userProductModal.hideModal()
+          this.getCart()
+        })
+        .catch(err => {
+          alert(err.response.data.message)
         })
     }
   }
